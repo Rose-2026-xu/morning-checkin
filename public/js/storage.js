@@ -190,6 +190,15 @@ const Storage = {
     this.set('serverUrl', url);
   },
 
+  // 自动检测服务器地址（如果从Web服务器访问而非file://，则使用同源地址）
+  autoDetectServer() {
+    if (window.location.protocol !== 'file:' && !this.getServerUrl()) {
+      var url = window.location.origin;
+      this.setServerUrl(url);
+      this.serverUrl = url;
+    }
+  },
+
   // ===== 同步队列 =====
 
   _getSyncQueue() { return this.get('syncQueue', []); },
