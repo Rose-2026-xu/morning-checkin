@@ -11,6 +11,7 @@ const App = {
     // 班级数据迁移（一次性，将平铺数据移入默认班级）
     Storage.migrateToClasses();
     Storage.ensureCurrentClass();
+    Storage.autoDetectServer();
     Storage.initSync();
 
     // 路由监听
