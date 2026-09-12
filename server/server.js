@@ -9,7 +9,7 @@ const path = require('path');
 const { initDatabase, saveToDisk, queryAll, queryOne, run } = require('./db');
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3002;
 const JWT_SECRET = process.env.JWT_SECRET || 'morning-checkin-secret-2026';
 
 // 中间件
