@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>早读打卡</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="stylesheet" href="css/task-page.css">
+  <link rel="stylesheet" href="css/checkin-page.css">
+</head>
+<body>
+  <!-- 班级选择栏 -->
+  <div id="class-bar" class="class-bar" style="display:none;">
+    <span class="class-bar-label">班级：</span>
+    <select id="class-selector" class="class-selector"></select>
+  </div>
+
+  <!-- 导航栏（底部） -->
+  <nav class="nav-bar" id="nav-bar">
+    <div class="nav-links">
+      <a class="nav-item" data-page="task" href="#/task">📋 任务</a>
+      <a class="nav-item" data-page="checkin" href="#/checkin">✅ 打卡</a>
+      <a class="nav-item" data-page="settings" href="#/settings">⚙️ 设置</a>
+      <a class="nav-item" data-page="history" href="#/history">📊 历史</a>
+    </div>
+  </nav>
+
+  <!-- 登录/注册页 -->
+  <div class="page" id="page-login" style="display:none;">
+    <div class="auth-container">
+      <div class="auth-card">
+        <div class="auth-header">
+          <span class="auth-logo">☀️</span>
+          <h1>早读打卡</h1>
+          <p class="auth-subtitle">教师端</p>
+        </div>
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-tab="login">登录</button>
+          <button class="auth-tab" data-tab="register">注册</button>
+        </div>
+        <!-- 登录表单 -->
+        <form class="auth-form" id="login-form">
+          <div class="form-group">
+            <label>用户名</label>
+            <input type="text" id="login-username" placeholder="请输入用户名" required autocomplete="username">
+          </div>
+          <div class="form-group">
+            <label>密码</label>
+            <input type="password" id="login-password" placeholder="请输入密码" required autocomplete="current-password">
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">登 录</button>
+        </form>
+        <!-- 注册表单 -->
+        <form class="auth-form" id="register-form" style="display:none;">
+          <div class="form-group">
+            <label>用户名</label>
+            <input type="text" id="reg-username" placeholder="设置用户名" required autocomplete="username">
+          </div>
+          <div class="form-group">
+            <label>教师姓名</label>
+            <input type="text" id="reg-teacher-name" placeholder="如：王老师" required>
+          </div>
+          <div class="form-group">
+            <label>密码</label>
+            <input type="password" id="reg-password" placeholder="设置密码（至少6位）" required minlength="6" autocomplete="new-password">
+          </div>
+          <div class="form-group">
+            <label>确认密码</label>
+            <input type="password" id="reg-password2" placeholder="再次输入密码" required minlength="6" autocomplete="new-password">
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">注 册</button>
+        </form>
+        <div class="auth-message" id="auth-message"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 任务页 -->
+  <div class="page" id="page-task" style="display:none;">
+    <div class="page-content" id="task-content"></div>
+  </div>
+
+  <!-- 打卡页 -->
+  <div class="page" id="page-checkin" style="display:none;">
+    <div class="page-content" id="checkin-content"></div>
+  </div>
+
+  <!-- 设置页 -->
+  <div class="page" id="page-settings" style="display:none;">
+    <div class="page-content" id="settings-content"></div>
+  </div>
+
+  <!-- 历史页 -->
+  <div class="page" id="page-history" style="display:none;">
+    <div class="page-content" id="history-content"></div>
+  </div>
+
+  <!-- Toast -->
+  <div id="mc-toast" class="mc-toast"></div>
+
+  <!-- Scripts -->
+  <script src="js/utils.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/avatars.js"></script>
+  <script src="js/import.js"></script>
+  <script src="js/task-page.js"></script>
+  <script src="js/checkin-page.js"></script>
+  <script src="js/students.js"></script>
+  <script src="js/class-bar.js"></script>
+  <script src="js/app.js"></script>
+
+  <script>
+    // 班级切换事件 → 重新初始化当前页面
+    window.addEventListener('class-changed', () => {
+      ClassBar.refresh();
+      // 重新触发当前页面初始化以加载新班级数据
+      window.dispatchEvent(new CustomEvent('page-show', {
+        detail: { page: App.currentPage }
+      }));
+    });
+
+    // 页面显示事件处理
+    window.addEventListener('page-show', (e) => {
+      const { page } = e.detail;
+      const nav = document.getElementById('nav-bar');
+      const classBar = document.getElementById('class-bar');
+
+      // 登录页隐藏导航和班级栏
+      if (page === 'login' || page === 'register') {
+        nav.style.display = 'none';
+        classBar.style.display = 'none';
+      } else {
+        nav.style.display = '';
+        ClassBar.refresh();
+        // 更新导航激活状态
+        document.querySelectorAll('.nav-item').forEach(item => {
+          item.classList.toggle('active', item.dataset.page === page);
+        });
+      }
+
+      switch (page) {
+        case 'login':
+        case 'register':
+          initAuthPage(page);
+          break;
+        case 'task':
+          TaskPage.init();
+          break;
+        case 'checkin':
+          CheckinPage.init();
+          break;
+        case 'settings':
+          Students.init();
+          break;
+        case 'history':
+          initHistoryPage();
+          break;
+      }
+    });
+
+    // ===== 登录页逻辑 =====
+    function initAuthPage(tab) {
+      // Tab切换
+      document.querySelectorAll('.auth-tab').forEach(t => {
+        t.classList.toggle('active', t.dataset.tab === (tab || 'login'));
+      });
+      document.getElementById('login-form').style.display = tab === 'register' ? 'none' : '';
+      document.getElementById('register-form').style.display = tab === 'register' ? '' : 'none';
+
+      // Tab点击
+      document.querySelectorAll('.auth-tab').forEach(t => {
+        t.onclick = () => {
+          document.querySelectorAll('.auth-tab').forEach(x => x.classList.remove('active'));
+          t.classList.add('active');
+          const isReg = t.dataset.tab === 'register';
+          document.getElementById('login-form').style.display = isReg ? 'none' : '';
+          document.getElementById('register-form').style.display = isReg ? '' : 'none';
+          document.getElementById('auth-message').textContent = '';
+        };
+      });
+
+      // 登录
+      document.getElementById('login-form').onsubmit = async (e) => {
+        e.preventDefault();
+        const username = document.getElementById('login-username').value.trim();
+        const password = document.getElementById('login-password').value;
+        const result = await Auth.login(username, password);
+        if (result.success) {
+          window.location.hash = '#/task';
+        } else {
+          document.getElementById('auth-message').textContent = result.error;
+        }
+      };
+
+      // 注册
+      document.getElementById('register-form').onsubmit = async (e) => {
+        e.preventDefault();
+        const username = document.getElementById('reg-username').value.trim();
+        const teacherName = document.getElementById('reg-teacher-name').value.trim();
+        const password = document.getElementById('reg-password').value;
+        const password2 = document.getElementById('reg-password2').value;
+        const msg = document.getElementById('auth-message');
+
+        if (!username || !teacherName || !password) {
+          msg.textContent = '请填写所有字段';
+          return;
+        }
+        if (password !== password2) {
+          msg.textContent = '两次密码不一致';
+          return;
+        }
+        if (password.length < 6) {
+          msg.textContent = '密码至少6位';
+          return;
+        }
+
+        const result = await Auth.register(username, password, teacherName);
+        if (result.success) {
+          window.location.hash = '#/task';
+        } else {
+          msg.textContent = result.error;
+        }
+      };
+    }
+
+    // ===== 历史页逻辑 =====
+    function initHistoryPage() {
+      // 克隆容器移除旧监听器
+      const oldC = document.getElementById('history-content');
+      if (oldC) {
+        const freshC = oldC.cloneNode(false);
+        freshC.id = 'history-content';
+        oldC.parentNode.replaceChild(freshC, oldC);
+      }
+
+      const container = document.getElementById('history-content');
+      const records = Storage.getRecords();
+      const dates = Object.keys(records).sort().reverse();
+
+      container.innerHTML = `
+        <div class="history-page">
+          <h2>📊 打卡历史</h2>
+          ${dates.length === 0 ? '<p class="empty-hint">暂无打卡记录</p>' : ''}
+          <div class="history-list">
+            ${dates.map(date => {
+              const rec = records[date];
+              const students = Storage.getStudents();
+              const checkedIds = rec.checkins ? Object.keys(rec.checkins) : [];
+              const doneCount = checkedIds.length;
+              return `
+                <div class="history-item" data-date="${date}">
+                  <div class="history-date">${Utils.formatDate(new Date(date))}</div>
+                  <div class="history-summary">
+                    <span class="history-progress">${doneCount} 人完成</span>
+                    <div class="progress-bar small">
+                      <div class="progress-fill" style="width: ${students.length > 0 ? (doneCount / students.length * 100) : 0}%"></div>
+                    </div>
+                  </div>
+                  <button class="btn btn-secondary btn-sm btn-view-detail" data-date="${date}">详情</button>
+                </div>
+              `;
+            }).join('')}
+          </div>
+          <button class="btn btn-secondary" id="btn-back-task">返回任务</button>
+        </div>
+      `;
+
+      // 返回设置
+      container.querySelector('#btn-back-task')?.addEventListener('click', () => {
+        window.location.hash = '#/task';
+      });
+
+      container.addEventListener('click', (e) => {
+        const btn = e.target.closest('.btn-view-detail');
+        if (btn) {
+          const date = btn.dataset.date;
+          const rec = records[date];
+          const students = Storage.getStudents();
+          const checkedIds = new Set(rec.checkins ? Object.keys(rec.checkins) : []);
+          const checkedStudents = students.filter(s => checkedIds.has(s.id));
+          const pendingStudents = students.filter(s => !checkedIds.has(s.id));
+
+          const overlay = document.createElement('div');
+          overlay.className = 'dialog-overlay';
+          overlay.innerHTML = `
+            <div class="dialog dialog-wide">
+              <h3>${Utils.formatDate(new Date(date))} 打卡详情</h3>
+              <div class="detail-section">
+                <h4>✅ 已完成 (${checkedStudents.length})</h4>
+                <div class="detail-names">${checkedStudents.map(s => `<span class="name-tag done">${Utils.escapeHtml(s.name)}</span>`).join('') || '无'}</div>
+              </div>
+              <div class="detail-section">
+                <h4>📋 未完成 (${pendingStudents.length})</h4>
+                <div class="detail-names">${pendingStudents.map(s => `<span class="name-tag pending">${Utils.escapeHtml(s.name)}</span>`).join('') || '无'}</div>
+              </div>
+              <button class="btn btn-secondary dialog-close">关闭</button>
+            </div>
+          `;
+          document.body.appendChild(overlay);
+          overlay.querySelector('.dialog-close').onclick = () => overlay.remove();
+          overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
+        }
+      });
+    }
+  </script>
+</body>
+</html>
