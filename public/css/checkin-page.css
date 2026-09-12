@@ -1,0 +1,290 @@
+/* ===== 打卡页样式 ===== */
+
+.page#page-checkin {
+  background: linear-gradient(180deg, #FFF8F0 0%, #FEF5E7 100%);
+}
+
+/* 全屏布局 */
+#page-checkin .page-content {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 48px);
+  max-width: 100%;
+  padding: 8px 12px;
+  overflow: hidden;
+}
+
+/* 顶部 */
+.checkin-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 6px 12px;
+  background: var(--color-card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 6px;
+  flex-shrink: 0;
+}
+
+.checkin-header h2 {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.checkin-progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.progress-bar {
+  width: 720px;
+  height: 24px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(0,0,0,0.08);
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.progress-fill {
+  border-radius: 12px;
+  background: linear-gradient(90deg, var(--color-success), #2ECC71);
+}
+
+.progress-text {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-success);
+  min-width: 70px;
+}
+
+.checkin-header-actions {
+  display: flex;
+  gap: 6px;
+}
+
+/* 左右分栏 */
+.checkin-body {
+  display: flex;
+  gap: 0;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.checkin-col {
+  flex: 1;
+  background: var(--color-card);
+  padding: 6px 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.checkin-pending {
+  border-radius: var(--radius) 0 0 var(--radius);
+}
+
+.checkin-done {
+  border-radius: 0 var(--radius) var(--radius) 0;
+  background: linear-gradient(180deg, #F0FFF0 0%, #E8F8F5 100%);
+}
+
+.checkin-divider {
+  width: 3px;
+  background: linear-gradient(180deg, var(--color-primary), var(--color-success));
+  flex-shrink: 0;
+}
+
+/* 列标题 */
+.checkin-col-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  padding-bottom: 3px;
+  border-bottom: 2px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.col-title {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.col-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+.pending-count {
+  background: #FDEDEC;
+  color: var(--color-accent);
+}
+
+.done-count {
+  background: #E8F8F5;
+  color: var(--color-success);
+}
+
+/* 头像网格 - 自动适配 */
+.checkin-grid {
+  display: grid;
+  gap: 4px;
+  padding: 2px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  align-content: start;
+}
+
+/* 头像槽位（固定位置） */
+.avatar-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 2px 1px 4px 1px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.15s, background 0.15s;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 空位 */
+.avatar-slot.empty-slot {
+  visibility: hidden;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* 待完成卡片 */
+.avatar-slot.pending-card {
+  background: #FFFBF5;
+  border: 1.5px solid transparent;
+}
+
+.avatar-slot.pending-card:hover {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+  transform: scale(1.08);
+}
+
+/* 已完成卡片 */
+.avatar-slot.done-card {
+  background: #E8F8F5;
+  border: 1.5px solid transparent;
+}
+
+.avatar-slot.done-card:hover {
+  background: #D5F5E3;
+  border-color: var(--color-success);
+  transform: scale(1.08);
+}
+
+/* 头像图 - 尺寸由--av CSS变量控制 */
+.avatar-img {
+  width: var(--av, 60px);
+  height: var(--av, 60px);
+  margin-bottom: 2px;
+  transition: transform 0.12s;
+  flex-shrink: 0;
+}
+
+.avatar-img svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.avatar-slot:hover .avatar-img {
+  transform: scale(1.06);
+}
+
+/* 名字 - 字号由--fs CSS变量控制 */
+.avatar-name {
+  font-size: var(--fs, 10px);
+  font-weight: 500;
+  text-align: center;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.3;
+  padding: 1px 1px 0 1px;
+  flex-shrink: 0;
+}
+
+.done-card .avatar-name {
+  color: var(--color-success);
+}
+
+/* 已完成标记 */
+.done-card::after {
+  content: '\2713';
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 14px;
+  height: 14px;
+  background: var(--color-success);
+  color: white;
+  border-radius: 50%;
+  font-size: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+/* 寄语 */
+.checkin-message {
+  margin-top: 4px;
+  padding: 0 12px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.checkin-message:empty { display: none; }
+
+.inspirational-quote {
+  font-size: 13px;
+  color: var(--color-text-light);
+  font-style: italic;
+  line-height: 1.5;
+  padding: 4px 12px;
+  background: rgba(255,255,255,0.7);
+  border-radius: 6px;
+  border-left: 3px solid var(--color-primary);
+  display: inline-block;
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 900px) {
+  .checkin-header { flex-direction: column; align-items: flex-start; }
+}
+
+@media (max-width: 600px) {
+  .checkin-body { flex-direction: column; }
+  .checkin-divider { width: 100%; height: 3px; }
+  .checkin-pending, .checkin-done { border-radius: var(--radius); }
+}
+
+/* 大屏投影 */
+@media (min-width: 1600px) {
+  .checkin-header h2 { font-size: 18px; }
+}
