@@ -1,0 +1,233 @@
+/* ===== 任务页样式 ===== */
+
+.page#page-task {
+  background: linear-gradient(135deg, #FFF8F0 0%, #FEF5E7 50%, #FDF2E9 100%);
+}
+
+#task-content {
+  display: flex;
+  gap: 32px;
+  min-height: calc(100vh - 120px);
+}
+
+/* 左侧 - 任务编辑区 */
+.task-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.task-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  padding: 8px 0;
+  border-bottom: 3px solid var(--color-primary);
+  outline: none;
+  min-height: 48px;
+}
+
+.task-title:focus {
+  border-bottom-color: var(--color-accent);
+}
+
+.task-date {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+}
+
+.task-date input[type="date"] {
+  width: auto;
+  font-size: 16px;
+  padding: 6px 12px;
+}
+
+/* 任务列表 */
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.task-item {
+  background: var(--color-card);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  box-shadow: var(--shadow);
+  border-left: 4px solid var(--color-primary);
+  transition: var(--transition);
+}
+
+.task-item:hover {
+  box-shadow: var(--shadow-hover);
+  border-left-color: var(--color-accent);
+}
+
+.task-time-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.task-time-row input[type="time"] {
+  width: 120px;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 6px 10px;
+}
+
+.task-time-row span {
+  font-size: 18px;
+  color: var(--color-text-light);
+}
+
+.task-content-row textarea {
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.btn-add-task {
+  align-self: flex-start;
+  border: 2px dashed var(--color-border);
+  background: transparent;
+  color: var(--color-text-light);
+  padding: 12px 24px;
+}
+
+.btn-add-task:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+/* 底部提示 */
+.task-bottom-note textarea {
+  background: #FFF9F0;
+  border-color: #F0D9B5;
+  font-size: 14px;
+  color: var(--color-text-light);
+}
+
+/* 操作按钮 */
+.task-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-start {
+  font-size: 18px;
+  padding: 14px 32px;
+  border-radius: 24px;
+  letter-spacing: 2px;
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+.btn-start:hover {
+  animation: none;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 3px 10px rgba(230,126,34,0.3); }
+  50% { box-shadow: 0 3px 20px rgba(230,126,34,0.5); }
+}
+
+/* 右侧 - 装饰 + 寄语 */
+.task-right {
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding-top: 20px;
+}
+
+.task-brand {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-accent);
+  letter-spacing: 4px;
+  text-shadow: 0 2px 8px rgba(231,76,60,0.2);
+}
+
+.task-decor-img {
+  width: 200px;
+  height: 200px;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.1));
+}
+
+.task-message {
+  width: 100%;
+  background: var(--color-card);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+
+.task-message label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-light);
+  margin-bottom: 8px;
+}
+
+.task-message textarea {
+  font-size: 14px;
+  line-height: 1.8;
+  border-color: var(--color-border);
+}
+
+/* 模板列表 */
+.template-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 12px 0;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.template-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--color-primary-light);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.template-item:hover {
+  background: #FDEBD0;
+}
+
+.template-name { flex: 1; font-weight: 500; }
+.template-date { font-size: 12px; color: var(--color-text-light); }
+
+/* ===== 响应式 ===== */
+@media (max-width: 900px) {
+  #task-content {
+    flex-direction: column;
+  }
+  .task-right {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .task-message { max-width: 400px; }
+}
+
+@media (max-width: 600px) {
+  .task-title { font-size: 24px; }
+  .task-item { padding: 12px; }
+  .task-actions { flex-direction: column; }
+  .btn-start { width: 100%; }
+}
